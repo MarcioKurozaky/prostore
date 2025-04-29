@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+
+// Import font Poppins
+import { Poppins } from "next/font/google";
 
 //globla css
 import "./globals.css";
@@ -10,8 +12,12 @@ import { APP_DESCRIPTION, APP_NAME, SERVER_URL } from "@/lib/constants";
 //Next-Theme
 import { GlobalThemeProvider } from "@/components/layout/GlobalThemeProvider";
 
-const inter = Inter({
-  //variable: "--font-geist-sans",
+// Toast
+import { Toaster } from "@/components/ui/sonner";
+
+//font Poppins
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
 });
 
@@ -31,8 +37,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>
-        <GlobalThemeProvider>{children}</GlobalThemeProvider>
+      <body className={`${poppins.className} antialiased`}>
+        <GlobalThemeProvider>
+          {children} <Toaster position="top-right" richColors />
+        </GlobalThemeProvider>
       </body>
     </html>
   );

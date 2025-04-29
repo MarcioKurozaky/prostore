@@ -1,21 +1,34 @@
 import { notFound } from "next/navigation";
+
+//product price
 import ProductPrice from "@/components/shared/product/productPrice";
+
+//ui
 import { Card, CardContent } from "@/components/ui/card";
 import { getProductBySlug } from "@/lib/actions/product.actions";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+
+//product image
 import ProductImages from "@/components/shared/product/product-images";
+
+//cart
+import AddToCart from "@/components/shared/cart/add-to-cart";
+
+//get my cart
+import { getMyCart } from "@/lib/actions/cart.actions";
 
 interface ProductDetailsPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export default async function ProductDetailsPage({
-  params,
-}: ProductDetailsPageProps) {
-  const { slug } = await params;
+export default async function ProductDetailsPage(
+  props: ProductDetailsPageProps
+) {
+  const { slug } = await props.params;
 
   const product = await getProductBySlug(slug);
+
+  const cart = await getMyCart();
 
   if (!product) notFound();
 
@@ -74,7 +87,17 @@ export default async function ProductDetailsPage({
 
               {product.stock > 0 && (
                 <div className=" flex-center">
-                  <Button className="w-full">Add to cart</Button>
+                  <AddToCart
+                    cart={cart}
+                    item={{
+                      productId: product.id,
+                      name: product.name,
+                      slug: product.slug,
+                      price: parseFloat(product.price),
+                      qty: 1,
+                      image: product.images![0],
+                    }}
+                  />
                 </div>
               )}
             </CardContent>

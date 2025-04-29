@@ -2,9 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
-//product_price
+// product_price
 import ProductPrice from "./productPrice";
 import { Product } from "@/types";
+
+import placeholder from "@/assets/images/no-image.png";
 
 interface ProductCardProps {
   product: Product;
@@ -17,7 +19,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <Link href={`/product/${product.slug}`}>
           <Image
             priority={true}
-            src={product.images[0]}
+            src={product.images[0] || placeholder}
             alt={product.name}
             className="aspect-square object-cover rounded"
             height={300}

@@ -13,18 +13,26 @@ import { APP_NAME } from "@/lib/constants";
 
 export default function NotFoundPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-slate-100 to-white text-slate-700">
       <Image
         src={logo}
-        width={48}
-        height={48}
+        width={64}
+        height={64}
         alt={`${APP_NAME} logo`}
         priority={true}
+        className="mb-6"
       />
-      <div className="p-6 w-1/3 rounded-lg shadow-md text-center">
-        <h1 className="text-3xl font-bold mb-4">Not Found</h1>
-        <p className="text-destructive">Could not find requested page</p>
-        <Button variant="outline" className="mt-4 ml-2" asChild>
+      <div className="p-8 bg-white bg-opacity-70 backdrop-blur-md rounded-xl shadow-xl w-1/2 max-w-lg">
+        <h1 className="text-4xl font-semibold text-gray-800 mb-4">
+          Page Not Found
+        </h1>
+        <p className="text-lg text-gray-600 mb-6">
+          Sorry, we couldn't find the page you're looking for.
+        </p>
+        <Button
+          variant="outline"
+          className="w-full py-3 text-lg font-medium bg-transparent text-slate-600 hover:bg-indigo-100 border-slate-600 transition-all duration-200 ease-in-out rounded-md"
+        >
           <Link href="/">Back To Home</Link>
         </Button>
       </div>
