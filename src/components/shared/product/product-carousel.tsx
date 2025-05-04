@@ -12,9 +12,11 @@ import Autoplay from "embla-carousel-autoplay";
 import Link from "next/link";
 import Image from "next/image";
 
-import placeholder from "@/assets/images/no-image.png";
+interface ProductCarouselProps {
+  data: Product[];
+}
 
-const ProductCarousel = ({ data }: { data: Product[] }) => {
+export default function ProductCarousel({ data }: ProductCarouselProps) {
   return (
     <Carousel
       className="w-full mb-12"
@@ -33,21 +35,17 @@ const ProductCarousel = ({ data }: { data: Product[] }) => {
         {data.map((product: Product) => (
           <CarouselItem key={product.id}>
             <Link href={`/product/${product.slug}`}>
-              <div className="relative mx-auto h-64 w-full">
+              <div className="relative mx-auto">
                 <Image
-                  src={
-                    product.banner && product.banner.trim() !== ""
-                      ? product.banner
-                      : placeholder
-                  }
+                  src={product.banner!}
                   alt={product.name}
-                  fill
-                  className="object-cover rounded-xl"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  priority
+                  height="0"
+                  width="0"
+                  sizes="100vw"
+                  className="w-full h-auto"
                 />
-                <div className="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/50 to-transparent">
-                  <h2 className="text-white text-xl md:text-2xl font-bold p-2">
+                <div className="absolute inset-0 flex items-end justify-center">
+                  <h2 className="bg-gray-900 bg-opacity-50 text-2xl font-bold px-2 text-white">
                     {product.name}
                   </h2>
                 </div>
@@ -60,6 +58,4 @@ const ProductCarousel = ({ data }: { data: Product[] }) => {
       <CarouselNext />
     </Carousel>
   );
-};
-
-export default ProductCarousel;
+}

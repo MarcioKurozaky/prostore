@@ -9,7 +9,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { UserIcon, LogOut, LayoutDashboard, PackageSearch } from "lucide-react";
+import {
+  UserIcon,
+  LogOut,
+  LayoutDashboard,
+  PackageSearch,
+  Layers,
+} from "lucide-react";
 
 const UserButton = async () => {
   const session = await auth();
@@ -72,6 +78,16 @@ const UserButton = async () => {
                 >
                   <LayoutDashboard className="w-4 h-4" />
                   Dashboard
+                </Link>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem asChild>
+                <Link
+                  href="/admin/category"
+                  className="flex items-center gap-2 w-full text-sm p-2 rounded-lg hover:bg-muted"
+                >
+                  <Layers className="w-4 h-4" />
+                  Category
                 </Link>
               </DropdownMenuItem>
 

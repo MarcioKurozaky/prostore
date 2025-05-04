@@ -15,6 +15,7 @@ import { revalidatePath } from "next/cache";
 
 //Product Schema
 import { insertProductSchema, updateProductSchema } from "../validators";
+import type { Prisma } from "@prisma/client";
 
 // Get the latest products
 export async function getLatestProducts() {
@@ -48,23 +49,76 @@ export async function getAllProducts({
   limit = PAGE_SIZE,
   page,
   category,
+  price,
+  rating,
+  sort,
 }: {
   query: string;
   limit?: number;
   page: number;
-  category: string;
+  category?: string;
+  price?: string;
+  rating?: string;
+  sort?: string;
 }) {
+  // Query filter
+  const queryFilter: Prisma.ProductWhereInput =
+    query && query !== "all"
+      ? {
+          name: {
+            contains: query,
+            mode: "insensitive",
+          } as Prisma.StringFilter,
+        }
+      : {};
+
+  // Category filter
+  const categoryFilter = category && category !== "all" ? { category } : {};
+
+  // Price filter
+  const priceFilter: Prisma.ProductWhereInput =
+    price && price !== "all"
+      ? {
+          price: {
+            gte: Number(price.split("-")[0]),
+            lte: Number(price.split("-")[1]),
+          },
+        }
+      : {};
+
+  // Rating filter
+  const ratingFilter =
+    rating && rating !== "all"
+      ? {
+          rating: {
+            gte: Number(rating),
+          },
+        }
+      : {};
+
   const data = await prisma.product.findMany({
+    where: {
+      ...queryFilter,
+      ...categoryFilter,
+      ...priceFilter,
+      ...ratingFilter,
+    },
+    orderBy:
+      sort === "lowest"
+        ? { price: "asc" }
+        : sort === "highest"
+        ? { price: "desc" }
+        : sort === "rating"
+        ? { rating: "desc" }
+        : { createdAt: "desc" },
     skip: (page - 1) * limit,
     take: limit,
   });
 
   const dataCount = await prisma.product.count();
 
-  const convData = JSON.parse(JSON.stringify(data));
-
   return {
-    data: convData,
+    data: convertToPlainObject(data),
     totalPages: Math.ceil(dataCount / limit),
   };
 }
@@ -137,10 +191,33 @@ export async function updateProduct(data: z.infer<typeof updateProductSchema>) {
 // Get featured products
 export async function getFeaturedProducts() {
   const data = await prisma.product.findMany({
-    where: { isFeatured: true },
-    orderBy: { createdAt: "desc" },
+    where: {
+      isFeatured: true,
+      banner: {
+        not: null,
+        notIn: [""],
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
     take: 4,
   });
 
   return convertToPlainObject(data);
+}
+
+export async function getProductPriceRange() {
+  const minResult = await prisma.product.aggregate({
+    _min: { price: true },
+  });
+
+  const maxResult = await prisma.product.aggregate({
+    _max: { price: true },
+  });
+
+  return {
+    min: minResult._min.price ? Number(minResult._min.price) : 0,
+    max: maxResult._max.price ? Number(maxResult._max.price) : 1000,
+  };
 }

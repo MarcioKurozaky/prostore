@@ -6,7 +6,8 @@ import Menu from "@/components/shared/header/menu";
 import logo from "@/assets/images/logo.svg";
 
 import AdminMainNav from "@/components/admin/main-nav";
-import SearchInput from "@/components/admin/searchInput";
+
+import AdminSearch from "@/components/admin/admin-search";
 
 export default function AdminLayout({
   children,
@@ -30,9 +31,7 @@ export default function AdminLayout({
             <AdminMainNav className="mx-6" />
 
             <div className="ml-auto flex items-center space-x-4">
-              <div>
-                <SearchInput />
-              </div>
+              <AdminSearch />
               <Menu />
             </div>
           </div>

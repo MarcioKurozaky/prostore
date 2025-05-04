@@ -142,3 +142,14 @@ export const updateUserSchema = updateProfileSchema.extend({
   id: z.string().min(1, "Id is required"),
   role: z.string().min(1, "Role is required"),
 });
+
+// Schema for inserting Categories
+export const insertCategorySchema = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  icon: z.string().optional(),
+});
+
+// Schema for updating products
+export const updateCategorySchema = insertCategorySchema.extend({
+  id: z.string().min(1, "Id is required"),
+});

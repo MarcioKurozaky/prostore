@@ -114,49 +114,46 @@ export const categories: Category[] = [
 ];
 
 export default function MegaMenu() {
-  const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  let timeoutId = useRef<NodeJS.Timeout | null>(null);
+  const timeoutId = useRef<NodeJS.Timeout | null>(null);
 
-  const handleMouseEnter = () => {
+  const openMenu = () => {
     if (timeoutId.current) clearTimeout(timeoutId.current);
-    setIsMenuVisible(true);
+    setIsVisible(true);
   };
 
-  const handleMouseLeave = () => {
+  const closeMenu = () => {
     timeoutId.current = setTimeout(() => {
-      setIsMenuVisible(false);
+      setIsVisible(false);
       setActiveCategory(null);
-    }, 150); // Delay para evitar sumiço rápido
+    }, 150);
   };
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsMenuVisible(false);
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setIsVisible(false);
         setActiveCategory(null);
       }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
     };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
 
   return (
     <div className="relative">
       {/* Desktop */}
-      <div className="hidden md:block relative" ref={menuRef}>
-        <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <div className="hidden md:block" ref={menuRef}>
+        <div onMouseEnter={openMenu} onMouseLeave={closeMenu}>
           <button className="px-5 py-2 bg-gray-900 text-white rounded-lg font-semibold hover:bg-gray-800 transition">
-            All Categories
+            All
           </button>
 
-          {isMenuVisible && (
+          {isVisible && (
             <div className="absolute z-30 mt-2 flex bg-white border rounded-xl shadow-xl">
-              {/* Category list */}
+              {/* Left: Categories */}
               <div className="w-56 border-r">
                 {categories.map((category) => (
                   <button
@@ -165,12 +162,12 @@ export default function MegaMenu() {
                     className="w-full px-4 py-2 flex items-center gap-3 text-left text-gray-800 hover:bg-gray-100 transition"
                   >
                     {category.icon}
-                    <span className="font-medium text-sm">{category.name}</span>
+                    <span className="text-sm font-medium">{category.name}</span>
                   </button>
                 ))}
               </div>
 
-              {/* Subcategory list */}
+              {/* Right: Subcategories */}
               {activeCategory && (
                 <div className="p-4 w-64">
                   <h4 className="font-bold mb-3 flex items-center gap-2 text-gray-900">
@@ -208,7 +205,7 @@ export default function MegaMenu() {
             </SheetHeader>
             {categories.map((category) => (
               <div key={category.slug} className="mb-5">
-                <h4 className="font-semibold text-base flex items-center gap-2 text-gray-800">
+                <h4 className="text-base font-semibold flex items-center gap-2 text-gray-800">
                   {category.icon}
                   {category.name}
                 </h4>

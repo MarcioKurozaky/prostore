@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 interface AdminUserPageProps {
   searchParams: Promise<{
-    page: string;
+    page: number;
     query: string;
   }>;
 }
@@ -22,12 +22,9 @@ interface AdminUserPageProps {
 export default async function AdminUserPage(props: AdminUserPageProps) {
   await requireAdmin();
 
-  const { page = "1" } = await props.searchParams;
+  const { page = 1, query: searchText } = await props.searchParams;
 
-  const users = await getAllUsers({
-    page: Number(page),
-    limit: 5,
-  });
+  const users = await getAllUsers({ page: Number(page), query: searchText });
 
   return (
     <div className="space-y-2">

@@ -13,7 +13,7 @@ import { productDefaultValues } from "@/lib/constants";
 import { insertProductSchema, updateProductSchema } from "@/lib/validators";
 
 // Types
-import { Product } from "@/types";
+import { Product, Category } from "@/types";
 
 // React Hook Form e Zod
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -41,6 +41,13 @@ import { createProduct, updateProduct } from "@/lib/actions/product.actions";
 // Utils
 import slugify from "slugify";
 import { UploadButton } from "@/lib/uploadthing";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Type Product Form Values
 type ProductFormValues =
@@ -51,12 +58,14 @@ interface ProductFormProps {
   type: "Create" | "Update";
   product?: Product;
   productId?: string;
+  categories?: Category[];
 }
 
 export default function ProductForm({
   type,
   product,
   productId,
+  categories,
 }: ProductFormProps) {
   const router = useRouter();
 
@@ -183,8 +192,7 @@ export default function ProductForm({
             )}
           />
         </div>
-
-        {/* Category and Brand */}
+        {/* Category and Brand */}{" "}
         <div className="flex flex-col md:flex-row gap-6">
           <FormField
             control={form.control}
@@ -192,13 +200,24 @@ export default function ProductForm({
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel className="font-semibold">Category</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter category"
-                    className="rounded-xl focus:ring-2 focus:ring-primary transition-all"
-                    {...field}
-                  />
-                </FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full rounded-xl focus:ring-2 focus:ring-primary transition-all">
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {categories?.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.name}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -213,7 +232,7 @@ export default function ProductForm({
                 <FormControl>
                   <Input
                     placeholder="Enter brand"
-                    className="rounded-xl focus:ring-2 focus:ring-primary transition-all"
+                    className=" rounded-xl focus:ring-2 focus:ring-primary transition-all"
                     {...field}
                   />
                 </FormControl>
@@ -222,7 +241,6 @@ export default function ProductForm({
             )}
           />
         </div>
-
         {/* Price and Stock */}
         <div className="flex flex-col md:flex-row gap-6">
           <FormField
@@ -263,7 +281,6 @@ export default function ProductForm({
             )}
           />
         </div>
-
         {/* Images Upload */}
         {/* Images Upload - Modernized Visual Template */}
         <Card className="bg-muted border rounded-2xl shadow-sm">
@@ -341,7 +358,6 @@ export default function ProductForm({
             />
           </CardContent>
         </Card>
-
         {/* Featured Checkbox + Banner - Modernized */}
         <Card className="bg-muted border rounded-2xl shadow-sm">
           <CardContent className="space-y-6 p-6">
@@ -420,7 +436,6 @@ export default function ProductForm({
             )}
           </CardContent>
         </Card>
-
         {/* Description */}
         <FormField
           control={form.control}
@@ -439,7 +454,6 @@ export default function ProductForm({
             </FormItem>
           )}
         />
-
         {/* Submit Button */}
         <Button
           type="submit"

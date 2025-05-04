@@ -33,14 +33,6 @@ export default function OrderTable({ orders, page }: OrderTableProps) {
 
   return (
     <>
-      <h2
-        className={` text-2xl font-bold ${
-          theme === "dark" ? "text-gray-200" : "text-gray-800"
-        }`}
-      >
-        My Orders
-      </h2>
-
       <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
         <Table className="min-w-full ">
           <TableHeader
@@ -53,6 +45,7 @@ export default function OrderTable({ orders, page }: OrderTableProps) {
             <TableRow>
               <TableHead className="py-3 px-4 text-left">ID</TableHead>
               <TableHead className="py-3 px-4 text-left">Date</TableHead>
+              <TableHead className="py-3 px-4 text-left">Buyer</TableHead>
               <TableHead className="py-3 px-4 text-left">Total</TableHead>
               <TableHead className="py-3 px-4 text-left">Paid</TableHead>
               <TableHead className="py-3 px-4 text-left">Delivered</TableHead>
@@ -77,6 +70,8 @@ export default function OrderTable({ orders, page }: OrderTableProps) {
                     ? formatDateTime(order.createdAt).dateTime
                     : "—"}
                 </TableCell>
+
+                <TableCell className="py-3 px-4">{order.user.name}</TableCell>
 
                 <TableCell className="py-3 px-4">
                   {formatCurrency(order.totalPrice)}
