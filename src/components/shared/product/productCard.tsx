@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import ProductPrice from "./productPrice";
 import { Product } from "@/types";
 import placeholder from "@/assets/images/no-image.png";
+import Rating from "./rating";
 
 interface ProductCardProps {
   product: Product;
@@ -40,7 +41,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         <div className="flex justify-between items-center mt-2">
           <span className="text-sm text-yellow-500 font-medium">
-            {product.rating} ⭐
+            <Rating value={Number(product.rating)} />
           </span>
           {product.stock > 0 ? (
             <ProductPrice value={Number(product.price)} />

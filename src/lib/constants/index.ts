@@ -71,3 +71,10 @@ export const categoryDefaultValues = {
   name: "",
   icon: "",
 };
+
+//review Form Default Values
+export const reviewFormDefaultValues = {
+  title: "",
+  comment: "",
+  rating: 0,
+};

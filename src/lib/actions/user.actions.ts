@@ -3,6 +3,10 @@
 //next_auth config
 import { auth, signIn, signOut } from "@/auth";
 
+import { hash, compare } from "bcryptjs";
+
+import crypto from "crypto";
+
 //schemas
 import {
   shippingAddressSchema,
@@ -30,6 +34,8 @@ import type { z } from "zod";
 import { PAGE_SIZE } from "../constants";
 import { revalidatePath } from "next/cache";
 import type { Prisma } from "@prisma/client";
+import { resetPasswordHTMLTemplate } from "../emailTemplate";
+import sendEmail from "../sendEmail";
 
 // Sign in the user with credentials
 export async function signInWithCredentials(
@@ -264,6 +270,99 @@ export async function updateUser(user: z.infer<typeof updateUserSchema>) {
       success: true,
       message: "User updated successfully",
     };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
+}
+
+//forgot Password
+export async function forgotPassword(email: string) {
+  try {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) throw new Error("Usuário não encontrado");
+
+    // Gerar token simples (envia para o usuário)
+    const rawToken = crypto.randomBytes(20).toString("hex");
+
+    // Gerar token com hash (armazenado no banco)
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(rawToken)
+      .digest("hex");
+
+    // Atualizar usuário com token e validade
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        resetPasswordToken: hashedToken,
+        resetPasswordExpire: new Date(Date.now() + 30 * 60 * 1000), // 30 minutos
+      },
+    });
+
+    // Enviar e-mail com link de reset
+    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/password/reset/${rawToken}`;
+    const html = resetPasswordHTMLTemplate(user.name, resetUrl);
+
+    await sendEmail({
+      email: user.email,
+      subject: "Recuperação de Senha",
+      message: html,
+    });
+
+    return { success: true, message: `E-mail enviado para ${user.email}` };
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
+}
+
+export async function resetPassword(
+  token: string,
+  password: string,
+  confirmPassword: string
+) {
+  try {
+    if (password !== confirmPassword) {
+      throw new Error("As senhas não coincidem");
+    }
+
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    const user = await prisma.user.findFirst({
+      where: {
+        resetPasswordToken: hashedToken,
+        resetPasswordExpire: { gt: new Date() },
+      },
+    });
+
+    if (!user) throw new Error("Token inválido ou expirado");
+
+    const hashedPassword = await hash(password, 10);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetPasswordToken: null,
+        resetPasswordExpire: null,
+      },
+    });
+
+    return { success: true, message: "Senha redefinida com sucesso" };
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
+}
+
+// Upload Avatar
+export async function uploadUserAvatar(userId: string, image: string) {
+  try {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { image },
+    });
+
+    revalidatePath("/me/settings");
+    return { success: true };
   } catch (error) {
     return { success: false, message: formatError(error) };
   }

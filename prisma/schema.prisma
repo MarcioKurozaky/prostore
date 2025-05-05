@@ -48,6 +48,9 @@ model User {
   createdAt     DateTime  @default(now()) @db.Timestamp(6)
   updatedAt     DateTime  @updatedAt
 
+  resetPasswordToken  String?
+  resetPasswordExpire DateTime?
+
   account Account[]
 
   session Session[]
