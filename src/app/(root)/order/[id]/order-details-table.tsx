@@ -36,17 +36,20 @@ import {
 //toast
 import { toast } from "sonner";
 import { formatCurrency, formatDateTime, formatId } from "@/lib/utils";
+import StripePayment from "./stripe-payment";
 
 interface OrderDetailsTableProps {
   order: Omit<Order, "paymentResult">;
   paypalClientId: string;
   isAdmin: boolean;
+  stripeClientSecret: string | null;
 }
 
 export default function OrderDetailsTable({
   order,
   paypalClientId,
   isAdmin,
+  stripeClientSecret,
 }: OrderDetailsTableProps) {
   const {
     id,
@@ -257,6 +260,14 @@ export default function OrderDetailsTable({
               )}
 
               {/* Stripe Payment */}
+
+              {!isPaid && paymentMethod === "Stripe" && stripeClientSecret && (
+                <StripePayment
+                  priceInCents={Number(order.totalPrice) * 100}
+                  orderId={order.id}
+                  clientSecret={stripeClientSecret}
+                />
+              )}
 
               {/* Cash On Delivery */}
               {isAdmin && !isPaid && paymentMethod === "CashOnDelivery" && (
