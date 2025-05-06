@@ -27,7 +27,7 @@ export default function NotFoundPage() {
           Page Not Found
         </h1>
         <p className="text-lg text-gray-600 mb-6">
-          Sorry, we couldn't find the page you're looking for.
+          Sorry, we could not find the page you are looking for.
         </p>
         <Button
           variant="outline"

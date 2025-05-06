@@ -7,7 +7,7 @@ import {
   getAllProducts,
   getProductPriceRange,
 } from "@/lib/actions/product.actions";
-import { generateSearchMetadata } from "@/lib/constants/generateSearchMetadata";
+
 import { getFilterUrl } from "@/lib/constants/getFiltered";
 import Link from "next/link";
 import React from "react";

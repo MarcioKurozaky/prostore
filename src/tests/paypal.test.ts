@@ -11,7 +11,7 @@ test("generates a PayPal access token", async () => {
 
 // Test to create a paypal order
 test("creates a paypal order", async () => {
-  const token = await generateAccessToken();
+  //const token = await generateAccessToken();
   const price = 10.0;
 
   const orderResponse = await paypal.createOrder(price);

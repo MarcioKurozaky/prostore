@@ -3,7 +3,7 @@
 //next_auth config
 import { auth, signIn, signOut } from "@/auth";
 
-import { hash, compare } from "bcryptjs";
+import { hash } from "bcryptjs";
 
 import crypto from "crypto";
 

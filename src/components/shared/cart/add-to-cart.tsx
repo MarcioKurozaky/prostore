@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 
 //toast
-import { toast, ToastAction } from "sonner";
+import { toast } from "sonner";
 
 //ui
 import { Button } from "@/components/ui/button";

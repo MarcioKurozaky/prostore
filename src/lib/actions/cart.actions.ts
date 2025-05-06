@@ -9,7 +9,6 @@ import { formatError, round2 } from "../utils";
 
 //cart type schema
 import { cartItemSchema, insertCartSchema } from "../validators";
-import { z } from "zod";
 
 //prisma
 import { prisma } from "@/db/prisma";

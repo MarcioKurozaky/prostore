@@ -12,13 +12,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { formatDateTime, formatId } from "@/lib/utils";
 import { Eye } from "lucide-react";
-import { useTheme } from "next-themes";
+
 import Pagination from "@/components/shared/pagination";
 import DeleteDialog from "@/components/shared/delete-dialog";
 import type { Category } from "@/types";
 import { deleteCategory } from "@/lib/actions/category.actions";
 
-import * as Icons from "lucide-react";
+//import * as Icons from "lucide-react";
 
 interface CategoryTableProps {
   categories: {
@@ -32,8 +32,6 @@ export default function CategoryTable({
   categories,
   page,
 }: CategoryTableProps) {
-  const { theme } = useTheme();
-
   return (
     <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm w-full">
       <Table className="min-w-full ">

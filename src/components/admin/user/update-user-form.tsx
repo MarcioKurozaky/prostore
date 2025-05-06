@@ -1,13 +1,13 @@
 "use client";
 
-import Image from "next/image";
+//import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 // Toast
 import { toast } from "sonner";
 
 // Default Values
-import { productDefaultValues, USER_ROLES } from "@/lib/constants";
+import { USER_ROLES } from "@/lib/constants";
 
 // Validators
 import { updateUserSchema } from "@/lib/validators";

@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import ProductForm from "@/components/admin/product/product-form";
 import { getUserById } from "@/lib/actions/user.actions";
 import UpdateUserForm from "@/components/admin/user/update-user-form";
 
