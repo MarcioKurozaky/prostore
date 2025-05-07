@@ -420,16 +420,7 @@ export default function ProductForm({
                           </div>
                         );
                       }}
-                    >
-                      <div className="w-full md:w-2/3 lg:w-1/2 p-8 border-2 border-dashed border-primary rounded-2xl text-center cursor-pointer hover:bg-primary/10 transition-all">
-                        <p className="font-semibold text-primary text-lg">
-                          Click or Drop Banner Image Here
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          Recommended size: 1920x680px (JPG, PNG)
-                        </p>
-                      </div>
-                    </UploadButton>
+                    />
                   </div>
                 )}
               </>
