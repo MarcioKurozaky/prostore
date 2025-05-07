@@ -93,6 +93,7 @@
     "@tailwindcss/postcss": "^4.1.4",
     "@types/jest": "^29.5.14",
     "@types/node": "^20.17.30",
+    "@types/nodemailer": "^6.4.17",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/ws": "^8.18.1",

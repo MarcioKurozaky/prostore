@@ -148,6 +148,7 @@ export async function updateUserPaymentMethod(
 ) {
   try {
     const session = await auth();
+
     const currentUser = await prisma.user.findFirst({
       where: { id: session?.user.id! },
     });
