@@ -86,12 +86,5 @@ export const prisma = new PrismaClient({ adapter }).$extends({
         },
       },
     },
-    category: {
-      createdAt: {
-        compute(category) {
-          return category.createdAt.toISOString();
-        },
-      },
-    },
   },
 });

@@ -42,7 +42,7 @@ type FormValuesProps =
 
 interface CategoryFormProps {
   type: "Create" | "Update";
-  category?: Category;
+  category: Category;
   categoryId?: string;
 }
 
