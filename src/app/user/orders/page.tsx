@@ -17,13 +17,15 @@ export const metadata: Metadata = {
 };
 
 interface UserOrdersPageProps {
-  searchParams: { page: string };
+  searchParams: Promise<{
+    page: string;
+  }>;
 }
 
-export default async function UserOrdersPage({
-  searchParams,
-}: UserOrdersPageProps) {
-  const { page } = await searchParams;
+export default async function UserOrdersPage(props: UserOrdersPageProps) {
+  const searchParams = await props.searchParams;
+
+  const { page = 1 } = searchParams;
 
   const orders = await getMyOrders({
     page: Number(page) || 1,
