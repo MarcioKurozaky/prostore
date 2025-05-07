@@ -1,4 +1,7 @@
-import cloudinary from "cloudinary";
+import cloudinary, {
+  type UploadApiErrorResponse,
+  type UploadApiResponse,
+} from "cloudinary";
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -17,10 +20,15 @@ const upload_file = (file: string, folder: string): Promise<UploadProps> => {
       file,
       {
         resource_type: "auto",
-        folder: folder,
+        folder,
       },
-      (error, result: any) => {
-        resolve({ public_id: result.public_id, url: result.url });
+      (
+        error: UploadApiErrorResponse | undefined,
+        result: UploadApiResponse | undefined
+      ) => {
+        if (error || !result) return reject(error);
+
+        resolve({ public_id: result.public_id, url: result.secure_url });
       }
     );
   });

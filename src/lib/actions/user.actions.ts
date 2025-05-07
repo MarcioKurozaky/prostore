@@ -120,8 +120,11 @@ export async function updateUserAddress(data: ShippingAddress) {
   try {
     const session = await auth();
 
+    if (!session?.user?.id) throw new Error("USer noot Authenticated");
+    const userId = session.user.id;
+
     const currentUser = await prisma.user.findFirst({
-      where: { id: session?.user?.id! },
+      where: { id: userId },
     });
 
     if (!currentUser) throw new Error("User not found");
@@ -149,8 +152,11 @@ export async function updateUserPaymentMethod(
   try {
     const session = await auth();
 
+    if (!session?.user?.id) throw new Error("USer noot Authenticated");
+    const userId = session.user.id;
+
     const currentUser = await prisma.user.findFirst({
-      where: { id: session?.user.id! },
+      where: { id: userId },
     });
     if (!currentUser) throw new Error("User not found");
 
@@ -311,8 +317,9 @@ export async function forgotPassword(email: string) {
     });
 
     return { success: true, message: `E-mail enviado para ${user.email}` };
-  } catch (error: any) {
-    return { success: false, message: error.message };
+  } catch (error: unknown) {
+    const err = error as Error;
+    return { success: false, message: err.message };
   }
 }
 
@@ -349,8 +356,9 @@ export async function resetPassword(
     });
 
     return { success: true, message: "Senha redefinida com sucesso" };
-  } catch (error: any) {
-    return { success: false, message: error.message };
+  } catch (error: unknown) {
+    const err = error as Error;
+    return { success: false, message: err.message };
   }
 }
 
