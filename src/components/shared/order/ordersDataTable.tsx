@@ -28,54 +28,62 @@ interface OrderTableProps {
 }
 
 export default function OrderTable({ orders, page }: OrderTableProps) {
-  // Estado para armazenar o filtro de pesquisa e o campo selecionado
   const [searchQuery, setSearchQuery] = useState("");
   const [filterColumn, setFilterColumn] = useState("all");
+  const { theme } = useTheme();
 
-  const { theme } = useTheme(); // Obtendo o tema atual
-
-  // Função para atualizar o filtro de pesquisa
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value.toLowerCase());
   };
 
-  // Função para atualizar a coluna de filtro
   const handleColumnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFilterColumn(e.target.value);
   };
 
-  // Função para filtrar os dados com base no campo de pesquisa e coluna selecionada
+  // Filtro seguro com switch-case
   const filteredOrders = orders.data.filter((order) => {
     if (filterColumn === "all") {
-      // Filtra todas as colunas
       return (
-        order.id.toString().toLowerCase().includes(searchQuery) ||
+        order.id.toLowerCase().includes(searchQuery) ||
         (order.createdAt
           ? formatDateTime(order.createdAt)
               .dateTime.toLowerCase()
               .includes(searchQuery)
           : false) ||
         order.totalPrice.toString().includes(searchQuery) ||
-        (order.isPaid ? "paid" : "not paid").includes(
-          searchQuery.toLowerCase()
-        ) ||
+        (order.isPaid ? "paid" : "not paid").includes(searchQuery) ||
         (order.isDelivered ? "delivered" : "not delivered").includes(
-          searchQuery.toLowerCase()
+          searchQuery
         )
       );
-    } else {
-      // Filtra apenas a coluna selecionada
-      return order[filterColumn]
-        ?.toString()
-        .toLowerCase()
-        .includes(searchQuery);
+    }
+
+    switch (filterColumn) {
+      case "id":
+        return order.id.toLowerCase().includes(searchQuery);
+      case "createdAt":
+        return order.createdAt
+          ? formatDateTime(order.createdAt)
+              .dateTime.toLowerCase()
+              .includes(searchQuery)
+          : false;
+      case "totalPrice":
+        return order.totalPrice.toString().includes(searchQuery);
+      case "isPaid":
+        return (order.isPaid ? "paid" : "not paid").includes(searchQuery);
+      case "isDelivered":
+        return (order.isDelivered ? "delivered" : "not delivered").includes(
+          searchQuery
+        );
+      default:
+        return false;
     }
   });
 
   return (
     <>
       <h2
-        className={` text-2xl font-bold ${
+        className={`text-2xl font-bold ${
           theme === "dark" ? "text-gray-200" : "text-gray-800"
         }`}
       >
@@ -83,7 +91,6 @@ export default function OrderTable({ orders, page }: OrderTableProps) {
       </h2>
 
       <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
-        {/* Filtros de pesquisa */}
         <div className="flex flex-col md:flex-row space-x-0 md:space-x-4 mb-4">
           <select
             value={filterColumn}
