@@ -11,7 +11,7 @@ const AdminSearch = () => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  // update initial state with URL Value
+  //Update initial state with URL Value
   useEffect(() => {
     const currentQuery = searchParams.get("query") || "";
     setQuery(currentQuery);
@@ -36,12 +36,18 @@ const AdminSearch = () => {
   }, [query, pathname, router, searchParams]);
 
   return (
-    <Input
-      type="text"
-      placeholder="Seacrh..."
-      value={query}
-      onChange={(e) => setQuery(e.target.value)}
-    />
+    <div className="flex flex-col gap-1">
+      <Input
+        type="text"
+        placeholder="Search..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        className={
+          isPending ? "opacity-50 transition-opacity duration-300" : ""
+        }
+      />
+      {isPending && <p className="text-xs text-gray-500">Searching...</p>}
+    </div>
   );
 };
 
