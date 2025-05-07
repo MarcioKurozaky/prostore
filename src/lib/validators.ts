@@ -146,6 +146,7 @@ export const updateUserSchema = updateProfileSchema.extend({
 // Schema for inserting Categories
 export const insertCategorySchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
+  icon: z.string().nullable(),
 });
 
 // Schema for updating products

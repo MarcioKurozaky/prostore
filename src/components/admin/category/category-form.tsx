@@ -153,6 +153,7 @@ export default function CategoryForm({
                     placeholder="Enter Icon name"
                     className="rounded-xl focus:ring-2 focus:ring-primary transition-all"
                     {...field}
+                    value={field.value ?? ""}
                   />
                 </FormControl>
                 <FormMessage />

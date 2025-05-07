@@ -54,7 +54,6 @@ export type User = z.infer<typeof updateUserSchema> & {
 //Category type Schema
 export type Category = z.infer<typeof insertCategorySchema> & {
   id: string;
-  icon?: string | null;
   createdAt: Date;
 };
 
