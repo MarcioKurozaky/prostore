@@ -93,7 +93,7 @@ export default function CategoryForm({
 
       const res = await updateCategory({
         ...(values as z.infer<typeof updateCategorySchema>),
-        id: cate,
+        id: categoryId,
       });
 
       if (!res.success) {
