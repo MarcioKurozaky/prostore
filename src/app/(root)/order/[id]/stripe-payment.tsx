@@ -1,16 +1,5 @@
-//ser
-import { SERVER_URL } from "@/lib/constants";
-
-//ui
-import { Button } from "@/components/ui/button";
-
-//format data
-import { formatCurrency } from "@/lib/utils";
-
-//next-theme
-import { useTheme } from "next-themes";
-
-//stripe
+import { FormEvent, useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
 import {
   Elements,
   LinkAuthenticationElement,
@@ -18,21 +7,20 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js/pure";
+import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/lib/utils";
+import { SERVER_URL } from "@/lib/constants";
 
-//react form
-import { FormEvent, useState } from "react";
-
-interface StripePaymentProps {
-  priceInCents: number;
-  orderId: string;
-  clientSecret: string;
-}
-export default function StripePayment({
+const StripePayment = ({
   priceInCents,
   orderId,
   clientSecret,
-}: StripePaymentProps) {
+}: {
+  priceInCents: number;
+  orderId: string;
+  clientSecret: string;
+}) => {
   const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
   );
@@ -118,4 +106,6 @@ export default function StripePayment({
       <StripeForm />
     </Elements>
   );
-}
+};
+
+export default StripePayment;

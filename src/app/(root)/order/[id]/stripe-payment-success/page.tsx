@@ -1,18 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { getOrderById } from "@/lib/actions/order.actions";
+import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import Stripe from "stripe";
-import { CheckCircle } from "lucide-react";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
-interface SuccessPageProps {
+const SuccessPage = async (props: {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ payment_intent: string }>;
-}
-
-export default async function SuccessPage(props: SuccessPageProps) {
+}) => {
   const { id } = await props.params;
   const { payment_intent: paymentIntentId } = await props.searchParams;
 
@@ -23,7 +21,7 @@ export default async function SuccessPage(props: SuccessPageProps) {
   // Retrieve payment intent
   const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
-  // Validate payment intent
+  // Check if payment intent is valid
   if (
     paymentIntent.metadata.orderId == null ||
     paymentIntent.metadata.orderId !== order.id.toString()
@@ -31,8 +29,9 @@ export default async function SuccessPage(props: SuccessPageProps) {
     return notFound();
   }
 
-  // Validate success
+  // Check if payment is successful
   const isSuccess = paymentIntent.status === "succeeded";
+
   if (!isSuccess) return redirect(`/order/${id}`);
 
   return (
@@ -52,4 +51,6 @@ export default async function SuccessPage(props: SuccessPageProps) {
       </div>
     </section>
   );
-}
+};
+
+export default SuccessPage;
