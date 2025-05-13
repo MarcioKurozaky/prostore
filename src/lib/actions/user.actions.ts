@@ -62,7 +62,7 @@ export async function signInWithCredentials(
 
 // Sign the user out
 export async function signOutUser() {
-  await signOut();
+  await signOut(); // logout normal para login com senha ou Google, etc.
 }
 
 // Register a new user

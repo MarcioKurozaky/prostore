@@ -15,7 +15,10 @@ import {
   LayoutDashboard,
   PackageSearch,
   Layers,
+  User,
 } from "lucide-react";
+import { signOut } from "next-auth/react";
+import LogoutButton from "./logoutButton";
 
 const UserButton = async () => {
   const session = await auth();
@@ -61,11 +64,21 @@ const UserButton = async () => {
 
           <DropdownMenuItem asChild>
             <Link
-              href="/admin/orders"
+              href="/user/orders"
               className="flex items-center gap-2 w-full text-sm p-2 rounded-lg hover:bg-muted"
             >
               <PackageSearch className="w-4 h-4" />
               Orders
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem asChild>
+            <Link
+              href="/user/profile"
+              className="flex items-center gap-2 w-full text-sm p-2 rounded-lg hover:bg-muted"
+            >
+              <User className="w-4 h-4" />
+              Profile
             </Link>
           </DropdownMenuItem>
 
@@ -105,13 +118,7 @@ const UserButton = async () => {
 
           <form action={signOutUser} className="w-full">
             <DropdownMenuItem asChild className="mt-2 p-0">
-              <Button
-                variant="ghost"
-                className="w-full flex items-center gap-2 py-2 text-left rounded-lg hover:bg-muted"
-              >
-                <LogOut className="w-4 h-4" />
-                Sign Out
-              </Button>
+              <LogoutButton />
             </DropdownMenuItem>
           </form>
         </DropdownMenuContent>

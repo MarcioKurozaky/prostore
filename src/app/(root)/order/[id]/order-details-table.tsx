@@ -26,12 +26,9 @@ import {
 import {
   updateOrderToPaidCOD,
   deliverOrder,
-} from "@/lib/actions/order.actions";
-
-import {
-  approvePayPalOrder,
   createPayPalOrder,
-} from "@/lib/actions/payment.actions";
+  approvePayPalOrder,
+} from "@/lib/actions/order.actions";
 
 //toast
 import { toast } from "sonner";
@@ -66,7 +63,7 @@ export default function OrderDetailsTable({
     deliveredAt,
   } = order;
 
-  function PrintLoadingState() {
+  const PrintLoadingState = () => {
     const [{ isPending, isRejected }] = usePayPalScriptReducer();
     let status = "";
 
@@ -76,9 +73,9 @@ export default function OrderDetailsTable({
       status = "Error Loading PayPal";
     }
     return status;
-  }
+  };
 
-  async function handleCreatePayPalOrder() {
+  const handleCreatePayPalOrder = async () => {
     const res = await createPayPalOrder(order.id);
 
     if (!res.success) {
@@ -90,18 +87,19 @@ export default function OrderDetailsTable({
     }
 
     return res.data;
-  }
+  };
 
-  async function handleApprovePayPalOrder(data: { orderID: string }) {
+  const handleApprovePayPalOrder = async (data: { orderID: string }) => {
     const res = await approvePayPalOrder(order.id, data);
     toast.success(
       <div className="flex items-center justify-between gap-4">
         <span className="text-blue-600 font-medium">{res.message}</span>
       </div>
     );
-  }
+  };
 
-  function MarkAsPaidButton() {
+  // Button to mark order as paid
+  const MarkAsPaidButton = () => {
     const [isPending, startTransition] = useTransition();
 
     return (
@@ -119,12 +117,13 @@ export default function OrderDetailsTable({
           })
         }
       >
-        {isPending ? "Processing..." : "Mark As Paid"}
+        {isPending ? "processing..." : "Mark As Paid"}
       </Button>
     );
-  }
+  };
 
-  function MarkAsDeliveredButton() {
+  // Button to mark order as delivered
+  const MarkAsDeliveredButton = () => {
     const [isPending, startTransition] = useTransition();
 
     return (
@@ -142,11 +141,10 @@ export default function OrderDetailsTable({
           })
         }
       >
-        {isPending ? "Processing..." : "Mark As Delivered"}
+        {isPending ? "processing..." : "Mark As Delivered"}
       </Button>
     );
-  }
-
+  };
   return (
     <>
       <h1 className="py-4 text-2xl">Order {formatId(id)}</h1>

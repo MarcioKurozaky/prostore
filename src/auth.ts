@@ -8,6 +8,12 @@ import { cookies } from "next/headers";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt-ts-edge";
 
+//providers
+import GitHubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
+import FacebookProvider from "next-auth/providers/facebook";
+import Auth0Provider from "next-auth/providers/auth0";
+
 export const config = {
   pages: {
     signIn: "/sign-in",
@@ -54,6 +60,27 @@ export const config = {
         // If user does not exist or password does not match return null
         return null;
       },
+    }),
+
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID!,
+      clientSecret: process.env.GITHUB_SECRET!,
+    }),
+
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_CLIENT_ID!,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
+    }),
+
+    Auth0Provider({
+      clientId: process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID as string,
+      clientSecret: process.env.AUTH0_CLIENT_SECRET as string,
+      issuer: process.env.NEXT_PUBLIC_AUTH0_DOMAIN as string,
     }),
   ],
   callbacks: {

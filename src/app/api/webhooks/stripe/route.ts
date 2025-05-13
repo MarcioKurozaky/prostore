@@ -1,4 +1,4 @@
-import { updateOrderToPaid } from "@/lib/actions/payment.actions";
+import { updateOrderToPaid } from "@/lib/actions/order.actions";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
