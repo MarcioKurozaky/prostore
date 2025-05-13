@@ -1,23 +1,20 @@
+import { Metadata } from "next";
 import { getOrderById } from "@/lib/actions/order.actions";
 import { notFound, redirect } from "next/navigation";
-
-import { ShippingAddress } from "@/types";
-
 import OrderDetailsTable from "./order-details-table";
+import { ShippingAddress } from "@/types";
 import { auth } from "@/auth";
-
 import Stripe from "stripe";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Order Details",
 };
 
-interface OrderDetailsPageProps {
+const OrderDetailsPage = async (props: {
   params: Promise<{
     id: string;
   }>;
-}
-export default async function OrderDetailsPage(props: OrderDetailsPageProps) {
+}) => {
   const { id } = await props.params;
 
   const order = await getOrderById(id);
@@ -56,4 +53,6 @@ export default async function OrderDetailsPage(props: OrderDetailsPageProps) {
       isAdmin={session?.user?.role === "admin" || false}
     />
   );
-}
+};
+
+export default OrderDetailsPage;

@@ -1,5 +1,4 @@
 "use client";
-
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -11,43 +10,36 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-
+import { formatCurrency, formatDateTime, formatId } from "@/lib/utils";
 import { Order } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
-
+import { toast } from "sonner";
 import { useTransition } from "react";
 import {
   PayPalButtons,
   PayPalScriptProvider,
   usePayPalScriptReducer,
 } from "@paypal/react-paypal-js";
-
 import {
-  updateOrderToPaidCOD,
-  deliverOrder,
   createPayPalOrder,
   approvePayPalOrder,
+  updateOrderToPaidCOD,
+  deliverOrder,
 } from "@/lib/actions/order.actions";
-
-//toast
-import { toast } from "sonner";
-import { formatCurrency, formatDateTime, formatId } from "@/lib/utils";
 import StripePayment from "./stripe-payment";
 
-interface OrderDetailsTableProps {
-  order: Omit<Order, "paymentResult">;
-  paypalClientId: string;
-  isAdmin: boolean;
-  stripeClientSecret: string | null;
-}
-
-export default function OrderDetailsTable({
+const OrderDetailsTable = ({
   order,
   paypalClientId,
   isAdmin,
   stripeClientSecret,
-}: OrderDetailsTableProps) {
+}: {
+  order: Omit<Order, "paymentResult">;
+  paypalClientId: string;
+  isAdmin: boolean;
+  stripeClientSecret: string | null;
+}) => {
   const {
     id,
     shippingAddress,
@@ -81,7 +73,7 @@ export default function OrderDetailsTable({
     if (!res.success) {
       toast.success(
         <div className="flex items-center justify-between gap-4">
-          <span className="text-blue-600 font-medium">{res.message}</span>
+          <span className="text-red-600 font-medium">{res.message}</span>
         </div>
       );
     }
@@ -91,6 +83,7 @@ export default function OrderDetailsTable({
 
   const handleApprovePayPalOrder = async (data: { orderID: string }) => {
     const res = await approvePayPalOrder(order.id, data);
+
     toast.success(
       <div className="flex items-center justify-between gap-4">
         <span className="text-blue-600 font-medium">{res.message}</span>
@@ -145,11 +138,12 @@ export default function OrderDetailsTable({
       </Button>
     );
   };
+
   return (
     <>
       <h1 className="py-4 text-2xl">Order {formatId(id)}</h1>
       <div className="grid md:grid-cols-3 md:gap-5">
-        <div className="col-span-2 space-y-4 overflow-x-auto">
+        <div className="col-span-2 space-4-y overlow-x-auto">
           <Card>
             <CardContent className="p-4 gap-4">
               <h2 className="text-xl pb-4">Payment Method</h2>
@@ -159,17 +153,16 @@ export default function OrderDetailsTable({
                   Paid at {formatDateTime(paidAt!).dateTime}
                 </Badge>
               ) : (
-                <Badge variant="destructive">Not Paid</Badge>
+                <Badge variant="destructive">Not paid</Badge>
               )}
             </CardContent>
           </Card>
-
           <Card className="my-2">
             <CardContent className="p-4 gap-4">
               <h2 className="text-xl pb-4">Shipping Address</h2>
               <p>{shippingAddress.fullName}</p>
               <p className="mb-2">
-                {shippingAddress.streetAddress}, {shippingAddress.city},{" "}
+                {shippingAddress.streetAddress}, {shippingAddress.city}
                 {shippingAddress.postalCode}, {shippingAddress.country}
               </p>
               {isDelivered ? (
@@ -181,7 +174,6 @@ export default function OrderDetailsTable({
               )}
             </CardContent>
           </Card>
-
           <Card>
             <CardContent className="p-4 gap-4">
               <h2 className="text-xl pb-4">Order Items</h2>
@@ -198,7 +190,7 @@ export default function OrderDetailsTable({
                     <TableRow key={item.slug}>
                       <TableCell>
                         <Link
-                          href={`/product/${item.slug}`}
+                          href={`/product/{item.slug}`}
                           className="flex items-center"
                         >
                           <Image
@@ -223,7 +215,6 @@ export default function OrderDetailsTable({
             </CardContent>
           </Card>
         </div>
-
         <div>
           <Card>
             <CardContent className="p-4 gap-4 space-y-4">
@@ -258,7 +249,6 @@ export default function OrderDetailsTable({
               )}
 
               {/* Stripe Payment */}
-
               {!isPaid && paymentMethod === "Stripe" && stripeClientSecret && (
                 <StripePayment
                   priceInCents={Number(order.totalPrice) * 100}
@@ -278,4 +268,6 @@ export default function OrderDetailsTable({
       </div>
     </>
   );
-}
+};
+
+export default OrderDetailsTable;
