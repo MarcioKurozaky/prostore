@@ -1,4 +1,3 @@
-import { auth } from "@/auth";
 import ProductCarousel from "@/components/shared/product/product-carousel";
 import ProductList from "@/components/shared/product/productList";
 import ViewAllProductsButton from "@/components/shared/view-all-products-button";
