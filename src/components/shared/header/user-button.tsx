@@ -16,7 +16,6 @@ import {
   Layers,
   User,
 } from "lucide-react";
-import LogoutButton from "./logoutButton";
 
 const UserButton = async () => {
   const session = await auth();
@@ -114,11 +113,16 @@ const UserButton = async () => {
             </>
           )}
 
-          <form action={signOutUser} className="w-full">
-            <DropdownMenuItem asChild className="mt-2 p-0">
-              <LogoutButton />
-            </DropdownMenuItem>
-          </form>
+          <DropdownMenuItem className="p-0 mb-1">
+            <form action={signOutUser} className="w-full">
+              <Button
+                className="w-full py-4 px-2 h-4 justify-start"
+                variant="ghost"
+              >
+                Sign Out
+              </Button>
+            </form>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
