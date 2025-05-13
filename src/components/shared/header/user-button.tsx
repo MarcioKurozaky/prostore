@@ -11,13 +11,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   UserIcon,
-  LogOut,
   LayoutDashboard,
   PackageSearch,
   Layers,
   User,
 } from "lucide-react";
-import { signOut } from "next-auth/react";
 import LogoutButton from "./logoutButton";
 
 const UserButton = async () => {

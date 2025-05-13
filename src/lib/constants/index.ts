@@ -6,7 +6,7 @@ export const APP_DESCRIPTION =
 
 //Const Serve Url
 export const SERVER_URL =
-  process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_SERVER_URL || "https://prostore-xi-eight.vercel.app";
 
 //Const numb Latest Product
 export const LATEST_PRODUCTS_LIMIT =
