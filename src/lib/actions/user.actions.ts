@@ -37,7 +37,6 @@ import type { Prisma } from "@prisma/client";
 import { resetPasswordHTMLTemplate } from "../emailTemplate";
 import sendEmail from "../sendEmail";
 import { sendResetEmail } from "@/email";
-import { redirect } from "next/navigation";
 
 // Sign in the user with credentials
 export async function signInWithCredentials(
