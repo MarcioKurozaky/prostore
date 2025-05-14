@@ -105,13 +105,20 @@ export default function CredentialsSignInForm() {
           Continue with Facebook
         </Button>
 
-        <Button
+        {/* <Button
           className="w-full bg-blue-600 text-white"
           variant="outline"
           onClick={() => signIn("auth0")}
         >
           Continue with Auth0
-        </Button>
+        </Button> */}
+
+        <div className="text-sm text-center text-muted-foreground">
+          Forget your Password?{" "}
+          <Link href="/forgot" target="_self" className="link">
+            Click Here
+          </Link>
+        </div>
       </div>
     </>
   );

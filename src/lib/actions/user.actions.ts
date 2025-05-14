@@ -36,6 +36,8 @@ import { revalidatePath } from "next/cache";
 import type { Prisma } from "@prisma/client";
 import { resetPasswordHTMLTemplate } from "../emailTemplate";
 import sendEmail from "../sendEmail";
+import { sendResetEmail } from "@/email";
+import { redirect } from "next/navigation";
 
 // Sign in the user with credentials
 export async function signInWithCredentials(
@@ -307,7 +309,7 @@ export async function forgotPassword(email: string) {
     });
 
     // Enviar e-mail com link de reset
-    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/password/reset/${rawToken}`;
+    const resetUrl = `${process.env.NEXT_PUBLIC_SERVER_URL}/password/reset/${rawToken}`;
     const html = resetPasswordHTMLTemplate(user.name, resetUrl);
 
     await sendEmail({
@@ -375,4 +377,84 @@ export async function uploadUserAvatar(userId: string, image: string) {
   } catch (error) {
     return { success: false, message: formatError(error) };
   }
+}
+
+// Enviar link de redefinição
+export async function sendResetPasswordLink(email: string) {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) throw new Error("Usuário não encontrado");
+
+  const token = crypto.randomBytes(32).toString("hex");
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  const expireTime = new Date(Date.now() + 60 * 60 * 1000); // 1 hora
+
+  await prisma.user.update({
+    where: { email },
+    data: {
+      resetPasswordToken: hashedToken,
+      resetPasswordExpire: expireTime,
+    },
+  });
+
+  const resetUrl = `${process.env.NEXT_PUBLIC_SERVER_URL}/reset/${token}`;
+  await sendResetEmail({ to: email, name: user.name, resetUrl });
+
+  return { success: true, message: "Link enviado com sucesso para " + email };
+}
+
+// Server action para usar no formulário
+export async function forgotPasswordAction(formData: FormData) {
+  const email = formData.get("email")?.toString();
+  if (!email) return { success: false, message: "O e-mail é obrigatório" };
+
+  try {
+    return await sendResetPasswordLink(email);
+  } catch (err: unknown) {
+    const error = err as Error;
+    return { success: false, message: error.message };
+  }
+}
+
+// Redefinir a senha
+export async function resetPasswordAction(formData: FormData) {
+  const token = formData.get("token")?.toString();
+  const password = formData.get("password")?.toString();
+
+  if (!token || !password) {
+    return { success: false, message: "Token e senha obrigatórios" };
+  }
+
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const user = await prisma.user.findFirst({
+    where: {
+      resetPasswordToken: hashedToken,
+      resetPasswordExpire: { gt: new Date() },
+    },
+  });
+
+  if (!user) {
+    return { success: false, message: "Token inválido ou expirado" };
+  }
+
+  const hashedPassword = await hash(password, 10);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      password: hashedPassword,
+      resetPasswordToken: null,
+      resetPasswordExpire: null,
+    },
+  });
+
+  // Login automático
+  await signIn("credentials", {
+    redirect: true,
+    callbackUrl: "/dashboard", // ajuste a página desejada
+    email: user.email,
+    password,
+  });
+
+  return { success: true, email: user.email };
 }
