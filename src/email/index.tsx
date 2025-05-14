@@ -5,6 +5,9 @@ import { Order } from "@/types";
 import PurchaseReceiptEmail from "./purchase-receipt";
 import ResetPasswordEmail from "./reset-password-email";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 const resend = new Resend(process.env.RESEND_API_KEY ?? "");
 
 export const sendPurchaseReceipt = async ({ order }: { order: Order }) => {
