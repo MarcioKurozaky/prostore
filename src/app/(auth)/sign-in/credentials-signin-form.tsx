@@ -113,10 +113,13 @@ export default function CredentialsSignInForm() {
           Continue with Auth0
         </Button> */}
 
-        <div className="text-sm text-center text-muted-foreground">
-          Forget your Password?{" "}
-          <Link href="/forgot" target="_self" className="link">
-            Click Here
+        <div className="text-sm text-center text-muted-foreground mt-4">
+          Esqueceu sua senha?{" "}
+          <Link
+            href="/forgot"
+            className="font-semibold text-blue-600 hover:text-blue-700 transition-colors underline underline-offset-1"
+          >
+            Clique aqui
           </Link>
         </div>
       </div>
