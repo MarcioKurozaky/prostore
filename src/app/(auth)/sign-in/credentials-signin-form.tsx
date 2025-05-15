@@ -41,14 +41,16 @@ export default function CredentialsSignInForm() {
         <input type="hidden" name="callbackUrl" value={callbackUrl} />
         <div className="space-y-6">
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="emailOrUsernameOrPhone">
+              Email, Username ou Telemóvel
+            </Label>
             <Input
-              id="email"
-              name="email"
-              type="email"
+              id="emailOrUsernameOrPhone"
+              name="emailOrUsernameOrPhone"
+              type="text"
               required
-              autoComplete="email"
-              defaultValue={signInDefaultValues.email}
+              autoComplete="username"
+              defaultValue={signInDefaultValues.emailOrUsernameOrPhone}
             />
           </div>
           <div>

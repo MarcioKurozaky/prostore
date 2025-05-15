@@ -27,16 +27,25 @@ export const config = {
   providers: [
     CredentialsProvider({
       credentials: {
-        email: { type: "email" },
-        password: { type: "password" },
+        emailOrUsernameOrPhone: {
+          label: "Email / Username / Phone",
+          type: "text",
+        },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (credentials == null) return null;
 
         // Find user in database
+        const identifier = credentials.emailOrUsernameOrPhone as string;
+
         const user = await prisma.user.findFirst({
           where: {
-            email: credentials.email as string,
+            OR: [
+              { email: identifier },
+              { username: identifier },
+              { phoneNumber: identifier },
+            ],
           },
         });
 

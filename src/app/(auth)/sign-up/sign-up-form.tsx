@@ -9,6 +9,10 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { signUp } from "@/lib/actions/user.actions";
 
+import { useState } from "react";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+
 const SignUpForm = () => {
   const [data, action] = useActionState(signUp, {
     message: "",
@@ -17,6 +21,8 @@ const SignUpForm = () => {
 
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
+
+  const [phoneNumber, setPhoneNumber] = useState<string | undefined>();
 
   const SignUpButton = () => {
     const { pending } = useFormStatus();
@@ -42,6 +48,7 @@ const SignUpForm = () => {
             autoComplete="name"
           />
         </div>
+
         <div>
           <Label htmlFor="email">Email</Label>
           <Input
@@ -53,6 +60,31 @@ const SignUpForm = () => {
             autoComplete="email"
           />
         </div>
+
+        <div>
+          <Label htmlFor="username">Username (optional)</Label>
+          <Input
+            id="username"
+            name="username"
+            type="text"
+            defaultValue={signUpDefaultValues.username}
+            autoComplete="username"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="phoneNumber">Phone Number</Label>
+          <PhoneInput
+            international
+            defaultCountry="AO"
+            id="phoneNumber"
+            name="phoneNumber"
+            value={phoneNumber}
+            onChange={setPhoneNumber}
+            className="block w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          />
+        </div>
+
         <div>
           <Label htmlFor="password">Password</Label>
           <Input
@@ -64,6 +96,7 @@ const SignUpForm = () => {
             autoComplete="current-password"
           />
         </div>
+
         <div>
           <Label htmlFor="confirmPassword">Confirm Password</Label>
           <Input

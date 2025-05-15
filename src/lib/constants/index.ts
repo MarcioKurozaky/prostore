@@ -14,7 +14,7 @@ export const LATEST_PRODUCTS_LIMIT =
 
 //sign-In Default Values
 export const signInDefaultValues = {
-  email: "",
+  emailOrUsernameOrPhone: "",
   password: "",
 };
 
@@ -22,6 +22,8 @@ export const signInDefaultValues = {
 export const signUpDefaultValues = {
   name: "",
   email: "",
+  username: "",
+  phoneNumber: "",
   password: "",
   confirmPassword: "",
 };

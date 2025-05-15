@@ -37,7 +37,6 @@ import type { Prisma } from "@prisma/client";
 import { resetPasswordHTMLTemplate } from "../emailTemplate";
 import sendEmail from "../sendEmail";
 import { sendResetEmail } from "@/email";
-import { redirect } from "next/navigation";
 
 // Sign in the user with credentials
 export async function signInWithCredentials(
@@ -46,11 +45,14 @@ export async function signInWithCredentials(
 ) {
   try {
     const user = signInFormSchema.parse({
-      email: formData.get("email"),
+      emailOrUsernameOrPhone: formData.get("emailOrUsernameOrPhone"),
       password: formData.get("password"),
     });
 
-    await signIn("credentials", user);
+    await signIn("credentials", {
+      emailOrUsernameOrPhone: user.emailOrUsernameOrPhone,
+      password: user.password,
+    });
 
     return { success: true, message: "Signed in successfully" };
   } catch (error) {
@@ -64,7 +66,7 @@ export async function signInWithCredentials(
 
 // Sign the user out
 export async function signOutUser() {
-  await signOut(); // logout normal para login com senha ou Google, etc.
+  await signOut();
 }
 
 // Register a new user
@@ -73,8 +75,10 @@ export async function signUp(prevState: unknown, formData: FormData) {
     const user = signUpFormSchema.parse({
       name: formData.get("name"),
       email: formData.get("email"),
-      confirmPassword: formData.get("confirmPassword"),
+      username: formData.get("username") || undefined,
+      phoneNumber: formData.get("phoneNumber") || undefined,
       password: formData.get("password"),
+      confirmPassword: formData.get("confirmPassword"),
     });
 
     const plainPassword = user.password;
@@ -85,12 +89,14 @@ export async function signUp(prevState: unknown, formData: FormData) {
       data: {
         name: user.name,
         email: user.email,
+        username: user.username,
+        phoneNumber: user.phoneNumber?.replace(/\s+/g, ""),
         password: user.password,
       },
     });
 
     await signIn("credentials", {
-      email: user.email,
+      emailOrUsernameOrPhone: user.email || user.username || user.phoneNumber,
       password: plainPassword,
     });
 

@@ -31,11 +31,10 @@ export const updateProductSchema = insertProductSchema.extend({
 
 // Schema for signing in a user
 export const signInFormSchema = z.object({
-  email: z
+  emailOrUsernameOrPhone: z
     .string()
-    .email("Invalid email address")
-    .min(3, "Email must be at least 3 characters"),
-  password: z.string().min(3, "Password must be at least 3 characters"),
+    .min(3, "O identificador deve ter pelo menos 3 caracteres"),
+  password: z.string().min(3, "A senha deve ter pelo menos 3 caracteres"),
 });
 
 // Schema for signing up a user
@@ -43,6 +42,13 @@ export const signUpFormSchema = z
   .object({
     name: z.string().min(3, "Name must be at least 3 characters"),
     email: z.string().min(3, "Email must be at least 3 characters"),
+    username: z.string().optional(),
+    phoneNumber: z
+      .union([z.string(), z.undefined()])
+      .refine((val) => !val || val.startsWith("+"), {
+        message:
+          "Número de telefone inválido. Deve começar com + e o código do país.",
+      }),
     password: z.string().min(3, "Password must be at least 3 characters"),
     confirmPassword: z
       .string()
