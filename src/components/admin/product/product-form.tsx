@@ -127,6 +127,59 @@ export default function ProductForm({
     }
   };
 
+  const handleRemoveImage = async (imageUrl: string, index: number) => {
+    if (!productId) return;
+
+    try {
+      const res = await fetch("/api/uploadthing/remove-image-product", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productId, imageUrl }),
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        const updatedImages = images.filter((_, i) => i !== index);
+        form.setValue("images", updatedImages);
+        toast.success("Imagem removida com sucesso.");
+      } else {
+        toast.error(result.message || "Erro ao remover imagem.");
+      }
+    } catch (error) {
+      toast.error("Erro inesperado ao remover imagem.");
+      console.error("Erro ao remover imagem:", error);
+    }
+  };
+
+  const handleRemoveBanner = async () => {
+    if (!productId || !banner) return;
+
+    try {
+      const res = await fetch("/api/uploadthing/remove-image-banner", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productId, bannerUrl: banner }),
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        form.setValue("banner", "");
+        toast.success("Banner removido com sucesso.");
+      } else {
+        toast.error(result.message || "Erro ao remover banner.");
+      }
+    } catch (error) {
+      toast.error("Erro inesperado ao remover banner.");
+      console.error("Erro ao remover banner:", error);
+    }
+  };
+
   const images = form.watch("images");
   const isFeatured = form.watch("isFeatured");
   const banner = form.watch("banner");
@@ -294,7 +347,6 @@ export default function ProductForm({
                     Product Images
                   </FormLabel>
 
-                  {/* Image Preview Section */}
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
                     {images.length > 0 ? (
                       images.map((image: string, index: number) => (
@@ -313,12 +365,7 @@ export default function ProductForm({
                           {/* Remove Button */}
                           <button
                             type="button"
-                            onClick={() => {
-                              const updatedImages = images.filter(
-                                (img, i) => i !== index
-                              );
-                              form.setValue("images", updatedImages);
-                            }}
+                            onClick={() => handleRemoveImage(image, index)}
                             className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-xs rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity"
                             title="Remove Image"
                           >
@@ -397,7 +444,7 @@ export default function ProductForm({
                     {/* Remove Button */}
                     <button
                       type="button"
-                      onClick={() => form.setValue("banner", "")}
+                      onClick={handleRemoveBanner}
                       className="absolute top-4 right-4 bg-black bg-opacity-60 text-white rounded-full p-2 text-sm opacity-0 group-hover:opacity-100 transition-opacity"
                       title="Remove banner"
                     >

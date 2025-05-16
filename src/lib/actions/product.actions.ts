@@ -107,10 +107,10 @@ export async function getAllProducts({
       sort === "lowest"
         ? { price: "asc" }
         : sort === "highest"
-        ? { price: "desc" }
-        : sort === "rating"
-        ? { rating: "desc" }
-        : { createdAt: "desc" },
+          ? { price: "desc" }
+          : sort === "rating"
+            ? { rating: "desc" }
+            : { createdAt: "desc" },
     skip: (page - 1) * limit,
     take: limit,
   });
@@ -220,4 +220,35 @@ export async function getProductPriceRange() {
     min: minResult._min.price ? Number(minResult._min.price) : 0,
     max: maxResult._max.price ? Number(maxResult._max.price) : 1000,
   };
+}
+
+export async function removeProductImage(productId: string, imageUrl: string) {
+  try {
+    // 1. Buscar produto atual
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+    });
+
+    if (!product) throw new Error("Produto não encontrado");
+
+    // 2. Remover imagem do array
+    const updatedImages = product.images.filter((img) => img !== imageUrl);
+
+    // 3. Atualizar produto
+    await prisma.product.update({
+      where: { id: productId },
+      data: {
+        images: updatedImages,
+      },
+    });
+
+    // 4. Deletar do UploadThing
+    const fileKey = imageUrl.split("/").pop(); // ou use regex se o formato da URL for diferente
+    await utapi.deleteFiles(fileKey as string);
+
+    return { success: true, message: "Imagem removida com sucesso" };
+  } catch (error) {
+    console.error("[REMOVE_PRODUCT_IMAGE]", error);
+    return { success: false, message: "Erro ao remover imagem" };
+  }
 }

@@ -185,7 +185,13 @@ export async function updateUserPaymentMethod(
 }
 
 // Update User Profile
-export async function updateProfile(user: { name: string; email: string }) {
+export async function updateProfile(user: {
+  name: string;
+  email: string;
+  username?: string;
+  phoneNumber?: string;
+  image?: string;
+}) {
   try {
     const session = await auth();
 
@@ -203,12 +209,15 @@ export async function updateProfile(user: { name: string; email: string }) {
       },
       data: {
         name: user.name,
+        username: user.username,
+        phoneNumber: user.phoneNumber?.replace(/\s+/g, ""),
+        image: user.image,
       },
     });
 
     return {
       success: true,
-      message: "User updated successfully",
+      message: "Perfil atualizado com sucesso",
     };
   } catch (error) {
     return { success: false, message: formatError(error) };

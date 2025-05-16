@@ -141,6 +141,14 @@ export const paymentResultSchema = z.object({
 export const updateProfileSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
   email: z.string().min(3, "Email must be at least 3 characters"),
+  username: z.string().optional(),
+  phoneNumber: z
+    .union([z.string(), z.undefined()])
+    .refine((val) => !val || val.startsWith("+"), {
+      message:
+        "Número de telefone inválido. Deve começar com + e o código do país.",
+    }),
+  image: z.string().optional(),
 });
 
 // Update User Schema
