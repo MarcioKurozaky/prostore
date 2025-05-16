@@ -155,6 +155,15 @@ export const updateProfileSchema = z.object({
 export const updateUserSchema = updateProfileSchema.extend({
   id: z.string().min(1, "Id is required"),
   role: z.string().min(1, "Role is required"),
+  username: z.string().nullable().optional(),
+  phoneNumber: z
+    .string()
+    .nullable()
+    .optional()
+    .refine((val) => !val || val.startsWith("+"), {
+      message: "Número inválido, deve começar com + e o código do país.",
+    }),
+  image: z.string().nullable().optional(),
 });
 
 // Schema for inserting Categories

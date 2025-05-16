@@ -29,16 +29,10 @@ import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useState } from "react";
+import type { User } from "@/types";
 
 interface ProfileFormProps {
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    image?: string | null;
-    username?: string | null;
-    phoneNumber?: string | null;
-  };
+  user: User;
 }
 
 export default function ProfileForm({ user }: ProfileFormProps) {
