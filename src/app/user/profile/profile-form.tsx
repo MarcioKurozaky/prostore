@@ -36,8 +36,8 @@ interface ProfileFormProps {
     name: string;
     email: string;
     image?: string | null;
-    username?: string;
-    phoneNumber?: string;
+    username?: string | null;
+    phoneNumber?: string | null;
   };
 }
 
